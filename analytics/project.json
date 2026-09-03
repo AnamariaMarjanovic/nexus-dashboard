@@ -1,34 +1,33 @@
 {
-  "name": "nexus-dashboard",
-  "$schema": "node_modules/nx/schemas/project-schema.json",
-  "includedScripts": [],
+  "name": "analytics",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "./src",
+  "sourceRoot": "analytics/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-architects/native-federation:build",
-      "defaultConfiguration": "production",
       "options": {
         "cacheExternalArtifacts": true,
-        "tsConfig": "tsconfig.federation.json"
+        "tsConfig": "analytics/tsconfig.federation.json"
       },
       "configurations": {
         "production": {
-          "target": "nexus-dashboard:esbuild:production"
+          "target": "analytics:esbuild:production"
         },
         "development": {
-          "target": "nexus-dashboard:esbuild:development",
+          "target": "analytics:esbuild:development",
           "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "production"
     },
     "serve": {
       "executor": "@angular-architects/native-federation:build",
       "options": {
-        "target": "nexus-dashboard:serve-original:development",
-        "tsConfig": "tsconfig.federation.json",
+        "target": "analytics:serve-original:development",
+        "tsConfig": "analytics/tsconfig.federation.json",
         "rebuildDelay": 500,
         "cacheExternalArtifacts": true,
         "dev": true,
@@ -36,19 +35,8 @@
         "port": 0
       }
     },
-    "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
-      "options": {
-        "buildTarget": "nexus-dashboard:build"
-      }
-    },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": [
-          "./src"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/vitest:test",
@@ -56,15 +44,16 @@
         "{options.reportsDirectory}"
       ],
       "options": {
-        "reportsDirectory": "coverage/nexus-dashboard"
+        "reportsDirectory": "coverage/analytics"
       }
     },
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "nexus-dashboard:build",
+        "buildTarget": "analytics:build",
         "port": 4200,
+        "staticFilePath": "dist/analytics/browser",
         "spa": true
       }
     },
@@ -75,23 +64,22 @@
       ],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/nexus-dashboard",
-        "index": "./src/index.html",
-        "tsConfig": "tsconfig.app.json",
+        "outputPath": "dist/analytics",
+        "browser": "analytics/src/main.ts",
+        "tsConfig": "analytics/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "public"
+            "input": "analytics/public"
           }
         ],
         "styles": [
-          "./src/styles.scss"
+          "analytics/src/styles.scss"
         ],
         "polyfills": [
           "es-module-shims"
-        ],
-        "browser": "./src/main.ts"
+        ]
       },
       "configurations": {
         "production": {
@@ -112,25 +100,24 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
+          "sourceMap": true
         }
       }
     },
     "serve-original": {
       "continuous": true,
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
-      "options": {
-        "port": 4200
-      },
       "configurations": {
         "production": {
-          "buildTarget": "nexus-dashboard:esbuild:production"
+          "buildTarget": "analytics:esbuild:production"
         },
         "development": {
-          "buildTarget": "nexus-dashboard:esbuild:development"
+          "buildTarget": "analytics:esbuild:development"
         }
+      },
+      "options": {
+        "port": 4201
       }
     }
   }
