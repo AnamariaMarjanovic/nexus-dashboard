@@ -4,7 +4,12 @@ import nx from '@nx/eslint-plugin';
 export default [
   ...baseConfig,
   {
-    ignores: ['**/dist', '**/out-tsc', '**/vitest.config.*.timestamp*'],
+    ignores: [
+      '**/dist',
+      '**/out-tsc',
+      '**/vitest.config.*.timestamp*',
+      '**/vite.config.*.timestamp*',
+    ],
   },
   {
     files: [
