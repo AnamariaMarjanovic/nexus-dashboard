@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Card } from '@nexus-dashboard/ui';
 import { Color, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+
 @Component({
-  imports: [RouterModule, NgxChartsModule],
+  imports: [RouterModule, NgxChartsModule, Card],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
+
 export class App {
   protected title = 'analytics';
 
