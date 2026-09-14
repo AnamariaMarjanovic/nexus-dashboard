@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 const teamMembers = [
   { name: 'Anamaria Oršulić', role: 'Frontend Lead', initials: 'AO' },
   { name: 'Marco Rossi', role: 'Backend Developer', initials: 'MR' },
@@ -6,10 +8,29 @@ const teamMembers = [
 ];
 
 export function App() {
+  const [activeOrg, setActiveOrg] = useState<string>(
+    (window as any).__nexusState?.activeOrg ?? 'Acme Inc.'
+  );
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.activeOrg) {
+        setActiveOrg(detail.activeOrg);
+      }
+    };
+
+    window.addEventListener('nexus-state-change', handler);
+    return () => window.removeEventListener('nexus-state-change', handler);
+  }, []);
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-2">Team</h1>
-      <p className="text-gray-500 mb-8">Members working on this project.</p>
+      <p className="text-gray-500 mb-2">Members working on this project.</p>
+      <p className="text-sm text-indigo-600 font-medium mb-8">
+        Viewing team for: {activeOrg}
+      </p>
 
       <div className="grid grid-cols-2 gap-6">
         {teamMembers.map((member) => (
