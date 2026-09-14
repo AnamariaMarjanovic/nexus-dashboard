@@ -1,4 +1,4 @@
-import { Injectable, signal } from "@angular/core";
+import { Injectable, signal } from '@angular/core';
 
 export interface AppState {
   activeOrg: string;
@@ -6,22 +6,24 @@ export interface AppState {
 
 const STATE_EVENT = 'nexus-state-change';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SharedStateService {
-  activeOrg = signal<string>('Acme Inc.');
+  activeOrg = signal<string>((window as any).__nexusState?.activeOrg ?? 'Acme Inc.');
 
   constructor() {
-    // Expose current state on window for cross-framework (react-Angular) access/communication
-    (window as any).__nexusState = {
-      activeOrg: this.activeOrg()
-    };
+    (window as any).__nexusState = { activeOrg: this.activeOrg() };
+
+    window.addEventListener(STATE_EVENT, (event: Event) => {
+      const detail = (event as CustomEvent).detail;
+      if (detail?.activeOrg && detail.activeOrg !== this.activeOrg()) {
+        this.activeOrg.set(detail.activeOrg);
+      }
+    });
   }
 
-  setActiveOrg(newOrg: string) {
-    this.activeOrg.set(newOrg);
-    (window as any).__nexusState.activeOrg = newOrg;
-    window.dispatchEvent(new CustomEvent(STATE_EVENT, { detail: { activeOrg: newOrg } }));
+  setActiveOrg(org: string) {
+    this.activeOrg.set(org);
+    (window as any).__nexusState = { activeOrg: org };
+    window.dispatchEvent(new CustomEvent(STATE_EVENT, { detail: { activeOrg: org } }));
   }
 }
