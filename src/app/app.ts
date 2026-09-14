@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SharedStateService } from '@nexus-dashboard/ui';
+
 
 @Component({
   imports: [RouterModule],
@@ -9,4 +11,10 @@ import { RouterModule } from '@angular/router';
 })
 export class App {
   protected title = 'nexus-dashboard';
+  protected sharedState = inject(SharedStateService);
+
+  onOrgChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.sharedState.setActiveOrg(value);
+  }
 }

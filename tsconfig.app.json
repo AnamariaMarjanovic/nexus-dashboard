@@ -4,7 +4,7 @@
     "outDir": "./dist/out-tsc",
     "types": []
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "libs/ui/src/lib/shared-state/shared-state.service.ts"],
   "exclude": [
     "src/**/*.spec.ts",
     "src/**/*.test.ts",

@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Card } from '@nexus-dashboard/ui';
+import { Card, SharedStateService } from '@nexus-dashboard/ui';
 import { Color, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+
 
 @Component({
   imports: [RouterModule, NgxChartsModule, Card],
+  providers: [SharedStateService],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -12,6 +14,7 @@ import { Color, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
 
 export class App {
   protected title = 'analytics';
+  protected sharedState = inject(SharedStateService);
 
   revenueData = [
     {
