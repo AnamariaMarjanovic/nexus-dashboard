@@ -16,6 +16,9 @@ export default defineConfig(() => ({
     port: 4300,
     host: 'localhost',
   },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  },
   plugins: [react(), tailwindcss(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
   build: {
     outDir: '../dist/team',
