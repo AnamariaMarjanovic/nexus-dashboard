@@ -2,14 +2,11 @@
   <aside class="w-56 bg-[#1a1a2e] text-white p-6 flex flex-col sticky top-0 h-screen overflow-y-auto">
     <h1 class="text-2xl font-bold mb-8">Nexus</h1>
     <nav class="flex flex-col gap-2">
-      <a routerLink="/" routerLinkActive="bg-indigo-600 text-white" [routerLinkActiveOptions]="{ exact: true }"
-        class="text-gray-300 no-underline px-3 py-2.5 rounded-md transition-colors hover:bg-white/10">Dashboard</a>
-      <a routerLink="/analytics" routerLinkActive="bg-indigo-600 text-white"
-        class="text-gray-300 no-underline px-3 py-2.5 rounded-md transition-colors hover:bg-white/10">Analytics</a>
-      <a routerLink="/team" routerLinkActive="bg-indigo-600 text-white"
-        class="text-gray-300 no-underline px-3 py-2.5 rounded-md transition-colors hover:bg-white/10">Team</a>
-      <a routerLink="/settings" routerLinkActive="bg-indigo-600 text-white"
-        class="text-gray-300 no-underline px-3 py-2.5 rounded-md transition-colors hover:bg-white/10">Settings</a>
+      @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="bg-indigo-600 text-white"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+        class="text-gray-300 no-underline px-3 py-2.5 rounded-md transition-colors hover:bg-white/10">{{item.label}}</a>
+      }
     </nav>
 
     <div class="mt-auto pt-6 border-t border-white/10">
