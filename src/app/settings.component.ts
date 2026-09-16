@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Card, SharedStateService } from '@nexus-dashboard/ui';
+import { Button, Card, SharedStateService } from '@nexus-dashboard/ui';
 
 @Component({
     selector: 'app-settings',
     standalone: true,
-    imports: [FormsModule, Card],
+    imports: [FormsModule, Card, Button],
     template: `
     <h1 class="text-3xl font-bold text-gray-800 mb-2">Settings</h1>
     <p class="text-gray-500 mb-8">Manage your profile, preferences and organization.</p>
@@ -65,9 +65,7 @@ import { Card, SharedStateService } from '@nexus-dashboard/ui';
 
       <ui-card label="Danger zone">
         <p class="text-sm text-gray-500 mb-3">This is a demo project — no data is actually deleted.</p>
-        <button class="text-sm text-red-600 border border-red-200 rounded-md px-3 py-2 hover:bg-red-50 transition-colors">
-          Remove organization access
-        </button>
+        <ui-button variant="danger">Remove organization access</ui-button>
       </ui-card>
     </div>
 
@@ -75,12 +73,7 @@ import { Card, SharedStateService } from '@nexus-dashboard/ui';
       <p class="text-sm text-green-600 mt-6">Preferences saved.</p>
     }
 
-    <button
-      (click)="save()"
-      class="mt-6 bg-indigo-600 text-white text-sm px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
-    >
-      Save changes
-    </button>
+    <ui-button (click)="save()">Save changes</ui-button>
   `,
 })
 export class SettingsComponent {
