@@ -13,6 +13,8 @@ Most portfolio projects show a single app end-to-end. This one is built to demon
 - **Team** (React) proves the architecture is framework-agnostic, not just multi-repo Angular.
 - All three are deployed as **independent Vercel projects** with independent CI — the shell loads them at runtime, not at build time.
 
+Try switching the organization dropdown in the sidebar from any page — it updates live across every module, regardless of framework or deployment.
+
 ## Architecture
 
 ```
@@ -24,16 +26,28 @@ Most portfolio projects show a single app end-to-end. This one is built to demon
                 │                         │
       loads at runtime              loads at runtime
                 │                         │
-┌───────────────▼────────────┐  ┌─────────▼───────────────────┐
-│   Analytics (Angular)       │  │   Team (React)                │
-│   Native Federation remote  │  │   Web Component remote        │
-│   nexus-analytics-...       │  │   nexus-team-...               │
-└─────────────────────────────┘  └───────────────────────────────┘
+┌───────────────▼────────────-┐  ┌─────────▼───────────────────┐
+│   Analytics (Angular)       │  │   Team (React)              │
+│   Native Federation remote  │  │   Web Component remote      │
+│   nexus-analytics-...       │  │   nexus-team-...            │
+└─────────────────────────────┘  └─────────────────────────────┘
 ```
 
-- **Shell ↔ Analytics:** [@angular-architects/native-federation](https://www.npmjs.com/package/@angular-architects/native-federation) — modern, webpack-free Module Federation for Angular.
-- **Shell ↔ Team:** React is compiled into a native **Web Component** (`<team-app>`) and loaded dynamically as an ES module. This sidesteps the current lack of mature Vite-based Module Federation tooling for cross-framework federation, while keeping the same "independently built and deployed" guarantee.
-- **Shared state** (e.g. active organization) is synced across all three runtimes — including across separate JS bundles — via native `window` CustomEvents, since a shared Angular DI singleton isn't actually shared across federated bundles.
+## Architecture decisions
+
+A few of the calls made along the way, and why — the reasoning matters more than the tech list.
+
+**Native Federation, not classic Module Federation.**
+Nx's own generator (`@nx/angular:host`) still scaffolds webpack-based Module Federation — but it's already deprecated and being removed in Nx v24. Rebuilt on `@angular-architects/native-federation` instead, which is framework-agnostic, doesn't require webpack, and is the direction Nx itself is moving toward. Redone mid-build once this became clear, rather than shipping on a soon-to-be-removed foundation.
+
+**Web Components, not federation, for the React remote.**
+The obvious next step for a cross-framework remote is a Vite-based Module Federation plugin. The main community option (`@gioboa/vite-module-federation`) depends on a `native-federation` core version three major versions behind the one the Angular side needs — forcing it would mean running a mismatched, effectively unmaintained runtime. Chose Web Components instead: React compiles to a standard custom element (`<team-app>`), and the shell loads it as a plain ES module at runtime. Same independent-deploy guarantee, without depending on immature tooling.
+
+**Shared state via `window` events, not a shared DI singleton.**
+The natural Angular instinct is `providedIn: 'root'` and inject it everywhere. That works within one bundle — it doesn't work across federated remotes, because each remote bundles its own copy of a workspace library unless explicitly configured as a federation-shared dependency. Rather than fighting that configuration, state changes are broadcast as native `CustomEvent`s on `window`. It's framework-agnostic by construction, which also made the React side trivial — it listens to the exact same event the Angular remote does.
+
+**Zone.js, not zoneless.**
+Zoneless is the newer Angular default and was the initial setup. `ngx-charts`'s tooltip logic manipulates the DOM in a way that isn't zoneless-safe, throwing `NG0100` on hover. Rather than avoid a real charting library to chase the newest default, switched the shell back to Zone.js — a deliberate trade-off, not an oversight.
 
 ## Tech stack
 
@@ -49,11 +63,12 @@ Most portfolio projects show a single app end-to-end. This one is built to demon
 
 ## Features
 
-- Sidebar navigation across Dashboard, Analytics, Team, and Settings
+- Dashboard overview with live stats, an activity feed, and quick links into each module
 - Analytics: KPI cards + revenue chart (ngx-charts)
 - Team: member directory (React, rendered inside the Angular shell)
 - Organization switcher in the sidebar — changes propagate live to every loaded module, regardless of framework
-- Shared design system component (`ui-card`) reused across Angular modules
+- Loading and error states for each federated module, with retry — no blank flash or dead end if a remote is slow or unreachable
+- A small shared design system (`libs/ui`): `Card`, `StatCard`, `Badge`, `Button`, `Spinner`, `ErrorState`, reused across every Angular module
 
 ## Running locally
 
