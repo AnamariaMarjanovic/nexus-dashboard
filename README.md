@@ -26,7 +26,7 @@ Try switching the organization dropdown in the sidebar from any page — it upda
                 │                         │
       loads at runtime              loads at runtime
                 │                         │
-┌───────────────▼────────────-┐  ┌─────────▼───────────────────┐
+┌───────────────▼────────────-┐  ┌────────▼───────────────────-┐
 │   Analytics (Angular)       │  │   Team (React)              │
 │   Native Federation remote  │  │   Web Component remote      │
 │   nexus-analytics-...       │  │   nexus-team-...            │
