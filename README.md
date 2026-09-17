@@ -19,10 +19,10 @@ Try switching the organization dropdown in the sidebar from any page — it upda
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Shell (Angular)                        │
-│         Sidebar · Routing · Shared org state               │
-│                nexus-shell-psi.vercel.app                  │
-└───────────────┬─────────────────────────┬─────────────────┘
+│                    Shell (Angular)                      │
+│         Sidebar · Routing · Shared org state            │
+│                nexus-shell-psi.vercel.app               │
+└───────────────┬─────────────────────────┬───────────────┘
                 │                         │
       loads at runtime              loads at runtime
                 │                         │
